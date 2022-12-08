@@ -1,11 +1,43 @@
 var irc = require('irc');
-var server = "eu.chat4all.org"
+var fs = require('fs');
 
-var client = new irc.Client(server, 'nicknamebot', {
-    channels: ['#mircbottest2'],
-    port: 6667,
-});
+var config  = require('./config.json');
+var commandHandler = require('./modules/command-handler.js');
+var observerHandler = require('./modules/observer-handler.js');
+var help = require('./modules/help.js');
+var autoop = require('./modules/autoop.js');
+var greetings = require('./modules/greetings.js');
+
+var client = new irc.Client(config.server, config.userName, config);
 
 client.addListener("registered", function() {
-    console.log("Bot is now registered with the server "+server);
+    console.log("Bot is now registered with the server "+config.server);
+    help.buildString();
+  });
+  
+  
+  // Error handler
+  client.addListener('error', function(message) {
+    console.log('error: ', message);
+  });
+  
+  
+  // Listen for messages
+  client.addListener('message', function(from, to, text, message) {
+  
+    //handles commands starting with "!""
+    commandHandler(client, from, to, text, message);
+  
+    //listens for certain keywords on conversatios etc and acts on them
+    //observerHandler(client, from, to, text, message);
+  
+  });
+  
+  
+  // Listen for joins
+  client.addListener("join", function(channel, nick, message) {
+  
+    greetings(client, channel, nick, message);
+    autoop(client, channel, nick, message);
+  
   });
