@@ -109,8 +109,16 @@ module.exports = function(client, from, to, text, message) {
   };
 
   internalCommand.position = function(opts) {
-    var acPositionData = fs.readFileSync('./simulateposdata/temporarytextfile.txt', 'utf-8')
+    var acPositionData = fs.readFileSync('./simulatepositdata/temporarytextfile.txt', 'utf-8')
+    if (err.code === 'ENOENT') {
+      console.log('File not found!');
+    } else {
+      throw err;
+    }
     client.say(sendTo, acPositionData)
+
+    //add code for error e.g. no data found
+    
   }
 
   /*
