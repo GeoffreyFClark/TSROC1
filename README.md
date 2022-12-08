@@ -1,6 +1,7 @@
 npm install typescript ts-node -g
 
 npm install irc -g
+npm install fs -g
 
 npm i --save-dev @types/node
 
