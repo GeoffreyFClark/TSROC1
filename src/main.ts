@@ -1,9 +1,11 @@
 var irc = require('irc');
-var client = new irc.Client('eu.chat4all.org', 'potato', {
+var server = "eu.chat4all.org"
+
+var client = new irc.Client(server, 'nicknamebot', {
     channels: ['#mircbottest2'],
     port: 6667,
 });
 
-console.log('Hello World');
-
-client.say('#Chess', "I'm a bot!");
+client.addListener("registered", function() {
+    console.log("Bot is now registered with the server "+server);
+  });

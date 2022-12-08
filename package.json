@@ -9,6 +9,7 @@
   "author": "G F Clark",
   "license": "ISC",
   "dependencies": {
+    "fs": "^0.0.1-security",
     "irc": "^0.5.2"
   },
   "devDependencies": {
