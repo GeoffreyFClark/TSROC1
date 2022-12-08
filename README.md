@@ -6,7 +6,9 @@ npm install fs -g
 npm i --save-dev @types/node
 
 .
+
 Added "dependencies" to package.json:
+
 .
 
 Run using: "node main.ts" or "npx ts-node main.ts" 
