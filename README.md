@@ -6,7 +6,7 @@ npm i --save-dev @types/node
 
 .
 
-Added to packacge.json:
+Added to package.json:
 
 "dependencies": {
 
