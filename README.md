@@ -6,12 +6,7 @@ npm i --save-dev @types/node
 
 .
 
-Added to package.json:
-
-"dependencies": {
-
-"irc": "^8.19.2"
-}
+Added "dependencies" to package.json:
 
 .
 
