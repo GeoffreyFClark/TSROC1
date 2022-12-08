@@ -15,6 +15,6 @@ Added to packacge.json:
 
 .
 
-Ran using npx ts-node main.ts
+Ran using npx ts-node main.ts or node main.ts
 
 Saw bot in specified server channel successfully
