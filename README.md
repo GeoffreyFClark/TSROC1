@@ -8,7 +8,7 @@ npm i --save-dev @types/node
 
 .
 
-Run using: "node main.ts" or "npx ts-node main.ts" 
+Run using: "node main.ts" or "npx ts-node main.ts" (main.ts located in src)
 
 .
 
