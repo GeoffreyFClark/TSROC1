@@ -14,4 +14,4 @@ Run using: "node main.ts" or "npx ts-node main.ts" (main.ts located in src)
 
 Dec 2: Saw bot in specified server channel successfully
 
-Dec 8: Bot successfully scraped simulated position data from a text file and sent to channel
+Dec 8: Bot successfully scraped simulated position data that was randomly generated into a text file and sent to channel
