@@ -7,3 +7,5 @@ var client = new irc.Client('eu.chat4all.org', 'potato', {
 console.log('Hello World');
 
 client.say('#Chess', "I'm a bot!");
+
+test
