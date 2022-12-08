@@ -108,6 +108,11 @@ module.exports = function(client, from, to, text, message) {
     }
   };
 
+  internalCommand.position = function(opts) {
+    var acPositionData = fs.readFileSync('./simulateposdata/temporarytextfile.txt', 'utf-8')
+    client.say(sendTo, acPositionData)
+  }
+
   /*
    * Standard IRC /topic setter
    * ---------------------------------------------------------------------------
