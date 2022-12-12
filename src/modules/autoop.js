@@ -1,7 +1,7 @@
 var fs = require('fs');
 var isAdmin = require('./is-admin.js');
 /*
- * Helper for checking if a nich is on channel's auto-op list
+ * Helper for checking if a nick is on channel's auto-op list
  * -----------------------------------------------------------------------------
  */
 function isInAutoop(channel, nick) {
