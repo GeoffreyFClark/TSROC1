@@ -3,6 +3,7 @@ var help = require('./help.js');
 var isChannel = require('./is-channel.js');
 var clearModuleCaches = require('./clear-module-caches.js');
 var isAdmin = require('./is-admin.js');
+const spawn = require('child_process').spawn;
 
 /*
  * Command handler
@@ -109,9 +110,13 @@ module.exports = function(client, from, to, text, message) {
   };
 
   internalCommand.position = function(opts) {
-    var acPositionData = fs.readFileSync('X:/CODING Projects/Air Force/airforce2/src/modules/simulatepositdata/temporarytextfile',
-    {encoding:'utf8', flag:'r'});
-    client.say(sendTo, acPositionData)
+    var pythonProcess = spawn('python',['X:/CODING Projects/Air Force/airforce2/src/modules/simulatepositdata/positiondatasimulated.py']);
+    pythonProcess.stdout.on('data', (data) => {
+      client.say(sendTo, data) // Line to do something with the data returned from python script
+     });
+    // var acPositionData = fs.readFileSync('X:/CODING Projects/Air Force/airforce2/src/modules/simulatepositdata/temporarytextfile',
+    // {encoding:'utf8', flag:'r'});
+    // client.say(sendTo, acPositionData)
 
     //add code for error e.g. no data found
     // if (err.code === 'ENOENT') {
