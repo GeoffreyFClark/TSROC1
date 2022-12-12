@@ -41,3 +41,19 @@ client.addListener("registered", function() {
     autoop(client, channel, nick, message);
   
   });
+
+  
+// ​Example 1: 
+// Approaching HOTZONE one would post (CALLSIGN | Ingress | FLXXX | Current Location | Desired Airspace)
+
+// ​Example 2: 
+//Once the airplane reached its working Airspace (CALLSIGN | Est | Working Airspace | FLXXX)
+
+// ​Example 3: 
+// Transiting to a new Airspace (CALLSIGN | TX | Current Airspace to New airspace | FLXXX)
+
+// ​Example 4: 
+// RTB/exiting HOTZONE (CALLSIGN | Egress | Current Airspace | FLXXX)
+
+// ​Example 5: 
+//Changing Altitude (CALLSIGN | Elev | Current Airspace | FLXXX for FLXXX deconflicted with Callsigns sharing the same airspace)
