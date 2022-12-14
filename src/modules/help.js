@@ -16,7 +16,7 @@ module.exports = {
 
     this.string = 'The available commands are: ';//reset the string
     this.string += '\n!help (this command you just ran)';
-    this.string += '!position';
+    this.string += ', !position';
     // this.string += '!reload';
     this.string += ', !quit';
     this.string += ', !join';

@@ -43,17 +43,39 @@ client.addListener("registered", function() {
   });
 
   
-// ​Example 1: 
+// ​Example 1: !approach
 // Approaching HOTZONE one would post (CALLSIGN | Ingress | FLXXX | Current Location | Desired Airspace)
+// leaving atc control (FIR)
+// once desired airspace set, sub for working airspace as well
 
-// ​Example 2: 
-//Once the airplane reached its working Airspace (CALLSIGN | Est | Working Airspace | FLXXX)
+// ​Example 2: !loiter 
+// Once the airplane reached its working Airspace (CALLSIGN | Est | Working Airspace | FLXXX)
 
-// ​Example 3: 
+// ​Example 3: !transit
 // Transiting to a new Airspace (CALLSIGN | TX | Current Airspace to New airspace | FLXXX)
 
-// ​Example 4: 
+// ​Example 4: !egress
 // RTB/exiting HOTZONE (CALLSIGN | Egress | Current Airspace | FLXXX)
+// returning into atc control
 
-// ​Example 5: 
-//Changing Altitude (CALLSIGN | Elev | Current Airspace | FLXXX for FLXXX deconflicted with Callsigns sharing the same airspace)
+// ​Example 5: !elev
+// Changing Altitude (CALLSIGN | Elev | Current Airspace | FLXXX for FLXXX deconflicted with Callsigns sharing the same airspace)
+
+// Don't sub TX or Elev, lets people know we are changing alt
+// Randomized altitude, location, fix callsign
+
+// local host port number local server
+
+// docker linux vm image rocky ubuntu something free and popular
+// wsl windows subsystem for linux
+// sysd relating to how to run a service
+
+
+// TO DO:
+// format commands for real world applicability
+// format for (not GARS) RANDOMIZED CGRS ##AA(up to 9# boxes)
+// can scrape most data except for target location
+// eg transit from 1 box to another box, position 1 box, loiter multiple sidebyside boxes
+// set up local server 
+// timer (30 sec) 
+// post-presentation, linux vm 
