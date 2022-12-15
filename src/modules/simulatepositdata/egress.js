@@ -1,4 +1,7 @@
-function cgrsdata(){
+// RTB/exiting HOTZONE (CALLSIGN | Egress | Current Airspace | FLXXX)
+// returning into atc control
+
+function egressdata(){
 
     function makeletters(length) {
         var result           = '';
@@ -28,21 +31,20 @@ function cgrsdata(){
         cgrsx = "0" + cgrsx;
     }
 
-    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 500;
-    var altitude = makealtitude.toString();
+    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
+    var flightlevel = makealtitude.toString();
 
-    var cgrsstring = "Altitude: "
-    
-    cgrsstring += altitude;
-    cgrsstring += ' | CGRS: '
-    cgrsstring += cgrsx;
-    cgrsstring += makeletters(2);
-    cgrsstring += makenumbers(1);
-    
-    return cgrsstring;
+    var approachstring = "<CALLSIGN> | Egress | FL"
+
+    approachstring += flightlevel;
+    approachstring += ' | CGRS: ';
+    // approachstring += cgrsx; 
+    // approachstring += makeletters(2);
+    // approachstring += makenumbers(1);
+    // approachstring += ' | Desired CGRS:';
+
+    return approachstring;
 }
 
 
-module.exports = cgrsdata();
-
-
+module.exports = egressdata();

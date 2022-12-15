@@ -17,10 +17,16 @@ module.exports = {
     this.string = 'The available commands are: ';//reset the string
     this.string += '\n!help (this command you just ran)';
     this.string += ', !position';
+    this.string += ', !approach';
+    this.string += ', !loiter';
+    this.string += ', !transit';
+    this.string += ', !egress';
+    this.string += ', !elev';
+    this.string += ', !airspace';
     // this.string += '!reload';
-    this.string += ', !quit';
-    this.string += ', !join';
-    this.string += ', !part';
+    // this.string += ', !quit';
+    // this.string += ', !join';
+    // this.string += ', !part';
     // this.string += ', !say';
     // this.string += ', !kick';
     // this.string += ', !ban';
@@ -31,9 +37,9 @@ module.exports = {
     // this.string += ', !mode';
 
 
-    fs.readdirSync('./commands/').forEach(function (file) {
-      this.string += ', !'+file.replace(/\.js$/, '');
-    });
+    // fs.readdirSync('./commands/').forEach(function (file) {
+    //   this.string += ', !'+file.replace(/\.js$/, '');
+    // });
 
   }
 

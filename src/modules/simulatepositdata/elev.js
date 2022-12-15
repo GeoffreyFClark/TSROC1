@@ -1,4 +1,7 @@
-function cgrsdata(){
+// Changing Altitude (CALLSIGN | Elev | Current Airspace | FLXXX for FLXXX 
+//deconflicted with Callsigns sharing the same airspace)
+
+function elevdata(){
 
     function makeletters(length) {
         var result           = '';
@@ -28,21 +31,20 @@ function cgrsdata(){
         cgrsx = "0" + cgrsx;
     }
 
-    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 500;
-    var altitude = makealtitude.toString();
+    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
+    var flightlevel = makealtitude.toString();
 
-    var cgrsstring = "Altitude: "
-    
-    cgrsstring += altitude;
-    cgrsstring += ' | CGRS: '
-    cgrsstring += cgrsx;
-    cgrsstring += makeletters(2);
-    cgrsstring += makenumbers(1);
-    
-    return cgrsstring;
+    var approachstring = "<CALLSIGN> | Elev | Current Airspace | FLXXX for FLXXX"
+
+    approachstring += flightlevel;
+    approachstring += ' | Current CGRS: ';
+    approachstring += cgrsx; 
+    approachstring += makeletters(2);
+    approachstring += makenumbers(1);
+    approachstring += ' | Desired CGRS:';
+
+    return approachstring;
 }
 
 
-module.exports = cgrsdata();
-
-
+module.exports = elevdata();

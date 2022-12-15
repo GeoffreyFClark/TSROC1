@@ -7,6 +7,7 @@ var observerHandler = require('./modules/observer-handler.js');
 var help = require('./modules/help.js');
 var autoop = require('./modules/autoop.js');
 var greetings = require('./modules/greetings.js');
+var cgrsdatasimulated = require('./modules/simulatepositdata/cgrsdatasimulated.js')
 
 var client = new irc.Client(config.server, config.userName, config);
 

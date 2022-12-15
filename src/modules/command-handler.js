@@ -3,8 +3,10 @@ var help = require('./help.js');
 var isChannel = require('./is-channel.js');
 var clearModuleCaches = require('./clear-module-caches.js');
 var isAdmin = require('./is-admin.js');
-var cgrsdatasimulated = require('./simulatepositdata/cgrsdatasimulated.js')
+
 const spawn = require('child_process').spawn;
+
+// import { cgrsfunction } from './simulatepositdata/cgrsdatasimulated.ts';
 
 /*
  * Command handler
@@ -111,8 +113,93 @@ module.exports = function(client, from, to, text, message) {
   };
 
   internalCommand.position = function(opts) {
+    var cgrsdatasimulated = require('./simulatepositdata/cgrsdatasimulated.js');
     client.say(sendTo, cgrsdatasimulated.toString());
+    delete require.cache[require.resolve('./simulatepositdata/cgrsdatasimulated.js')]
   };
+
+  globalThis.savedairspace;
+
+  internalCommand.airspace = function(opts) {
+    globalThis.savedairspace = opts.argument;
+    var airspaceupdate = "Airspace updated to: "
+    airspaceupdate += opts.argument;
+    client.say(sendTo, airspaceupdate.toString());
+  }
+
+  internalCommand.approach = function(opts) {
+      // if (isChannel(opts.argument)) {
+      //   var savedairspace = opts.argument;
+      // } else {
+        if (opts.argument.length > 1) {
+          var workingairspace = opts.argument;
+          global.savedairspace = opts.argument;
+        } else {
+           var workingairspace = global.savedairspace;
+        }
+      // }
+      var approachdata = require('./simulatepositdata/approach.js');
+      var approachmessage = approachdata.concat(" ", workingairspace);
+      client.say(sendTo, approachmessage.toString());
+      delete require.cache[require.resolve('./simulatepositdata/approach.js')]
+    }
+
+
+  internalCommand.loiter = function(opts) {
+    if (opts.argument.length > 1) {
+      var workingairspace = opts.argument;
+      global.savedairspace = opts.argument;
+    } else {
+       var workingairspace = global.savedairspace;
+    }
+    var loiterdata = require('./simulatepositdata/loiter.js');
+    var loitermessage = loiterdata.concat(" ", workingairspace);
+
+    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
+    var flightlevel = makealtitude.toString();
+    loitermessage += ' | FL';
+    loitermessage += flightlevel;    
+
+    client.say(sendTo, loitermessage.toString());
+    delete require.cache[require.resolve('./simulatepositdata/approach.js')]
+  }
+
+  internalCommand.transit = function(opts) {
+    var transitmessage = "<CALLSIGN> | Transit | "
+    transitmessage += global.savedairspace;
+    transitmessage += " to "
+    transitmessage += opts.argument;
+    global.savedairspace = opts.argument;
+    transitmessage += " | FL"
+    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
+    transitmessage += makealtitude.toString();
+    client.say(sendTo, transitmessage.toString());
+  };
+
+  internalCommand.egress = function(opts) {
+    if (opts.argument.length > 1) {
+      var egressairspace = opts.argument;
+      global.savedairspace = opts.argument;
+    } else {
+       var egressairspace = global.savedairspace;
+    }
+    var egressdata = require('./simulatepositdata/egress.js');
+    egressdata += egressairspace;
+    client.say(sendTo, egressdata.toString());
+    delete require.cache[require.resolve('./simulatepositdata/egress.js')]
+  };
+
+  internalCommand.elev = function(opts) {
+    var elevmessage = "<CALLSIGN> | Elev | ";
+    elevmessage += global.savedairspace;
+    elevmessage += " | FL"
+    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
+    elevmessage += makealtitude.toString();
+    elevmessage += " for "
+    elevmessage += opts.argument;
+    client.say(sendTo, elevmessage.toString());
+  };
+
 
   // internalCommand.position = function(opts) {
   //   var pythonProcess = spawn('javascript', ['X:/CODING Projects/Air Force/airforce2/src/modules/simulatepositdata/cgrsdatasimulated.js']);
