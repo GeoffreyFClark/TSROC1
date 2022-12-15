@@ -6,7 +6,7 @@ npm install fs -g
 
 npm i --save-dev @types/node
 
-~~npm install child_process -g (module to spawn python subprocess that generated simulated position data)
+~~npm install child_process -g (module to spawn python subprocess that generated simulated position data)~~
 
 .
 
