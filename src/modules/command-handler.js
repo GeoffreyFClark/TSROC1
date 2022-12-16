@@ -119,13 +119,20 @@ module.exports = function(client, from, to, text, message) {
   };
 
   globalThis.savedairspace;
+  globalThis.intervalsetting;
+  globalThis.loiterInterval1;
 
   internalCommand.airspace = function(opts) {
     globalThis.savedairspace = opts.argument;
     var airspaceupdate = "Airspace updated to: "
     airspaceupdate += opts.argument;
     client.say(sendTo, airspaceupdate.toString());
-  }
+  };
+
+  internalCommand.loiteroff = function(opts) {
+    global.intervalsetting = "off";
+    clearInterval(global.loiterInterval1);
+    };
 
   internalCommand.approach = function(opts) {
       // if (isChannel(opts.argument)) {
@@ -142,7 +149,7 @@ module.exports = function(client, from, to, text, message) {
       var approachmessage = approachdata.concat(" ", workingairspace);
       client.say(sendTo, approachmessage.toString());
       delete require.cache[require.resolve('./simulatepositdata/approach.js')]
-    }
+    };
 
 
   internalCommand.loiter = function(opts) {
@@ -151,18 +158,43 @@ module.exports = function(client, from, to, text, message) {
       global.savedairspace = opts.argument;
     } else {
        var workingairspace = global.savedairspace;
-    }
-    var loiterdata = require('./simulatepositdata/loiter.js');
-    var loitermessage = loiterdata.concat(" ", workingairspace);
+    };
 
-    var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
-    var flightlevel = makealtitude.toString();
-    loitermessage += ' | FL';
-    loitermessage += flightlevel;    
+    function loiter(){
+      var loiterdata = require('./simulatepositdata/loiter.js');
+      var loitermessage = loiterdata.concat(" ", workingairspace);
+  
+      var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
+      var flightlevel = makealtitude.toString();
+      loitermessage += ' | FL';
+      loitermessage += flightlevel;    
+  
+      client.say(sendTo, loitermessage.toString());
+      delete require.cache[require.resolve('./simulatepositdata/approach.js')];
+    };
+    
+    loiter();
+    client.say(sendTo, "15 sec auto-repeat until !egress !transit !loiteroff or new !loiter");
 
-    client.say(sendTo, loitermessage.toString());
-    delete require.cache[require.resolve('./simulatepositdata/approach.js')]
-  }
+    global.intervalsetting = "off";
+    clearInterval(global.loiterInterval1);
+
+    function repeaterfxn(){ 
+      if (globalThis.intervalsetting != "off") { 
+        loiter();
+      } else {
+        clearInterval(global.loiterInterval1);
+      }
+    };
+
+    function activateRepeater(){
+      global.intervalsetting = "on";
+      global.loiterInterval1 = setInterval( function(){repeaterfxn()}, 15 * 1000);
+    };
+
+    setTimeout(function(){activateRepeater()}, 3000);
+
+  }; 
 
   internalCommand.transit = function(opts) {
     var transitmessage = "<CALLSIGN> | Transit | "
@@ -174,6 +206,9 @@ module.exports = function(client, from, to, text, message) {
     var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
     transitmessage += makealtitude.toString();
     client.say(sendTo, transitmessage.toString());
+
+    global.intervalsetting = "off";
+    clearInterval(global.loiterInterval1);
   };
 
   internalCommand.egress = function(opts) {
@@ -187,10 +222,13 @@ module.exports = function(client, from, to, text, message) {
     egressdata += egressairspace;
     client.say(sendTo, egressdata.toString());
     delete require.cache[require.resolve('./simulatepositdata/egress.js')]
+
+    global.intervalsetting = "off";
+    clearInterval(global.loiterInterval1);
   };
 
   internalCommand.elev = function(opts) {
-    var elevmessage = "<CALLSIGN> | Elev | ";
+    var elevmessage = "<CALLSIGN> | Elev | Current CGRS:";
     elevmessage += global.savedairspace;
     elevmessage += " | FL"
     var makealtitude = (Math.floor(Math.random() * (50-36) + 36) ) * 5;
