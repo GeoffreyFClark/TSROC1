@@ -19,3 +19,5 @@ Dec 2: Saw bot in specified server channel successfully
 Dec 8: Bot successfully scraped + sent simulated position data that was randomly generated into a text file (!position)
 
 Dec 14: Added !approach !loiter !transit !elev !egress !airspace
+
+Dec 15: Added timer to !loiter and added !loiteroff
