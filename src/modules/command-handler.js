@@ -118,10 +118,6 @@ module.exports = function(client, from, to, text, message) {
     delete require.cache[require.resolve('./simulatepositdata/cgrsdatasimulated.js')]
   };
 
-  globalThis.savedairspace;
-  globalThis.intervalsetting;
-  globalThis.loiterInterval1;
-
   internalCommand.airspace = function(opts) {
     globalThis.savedairspace = opts.argument;
     var airspaceupdate = "Airspace updated to: "
@@ -129,10 +125,52 @@ module.exports = function(client, from, to, text, message) {
     client.say(sendTo, airspaceupdate.toString());
   };
 
-  internalCommand.loiteroff = function(opts) {
-    global.intervalsetting = "off";
-    clearInterval(global.loiterInterval1);
-    };
+  globalThis.savedairspace;
+
+  globalThis.intervalsetting;
+  globalThis.loiterInterval1;
+
+  globalThis.repeatsetting;
+  globalThis.repeatInterval;
+
+  internalCommand.repeat = function(opts) {
+      var words = opts.argument.substring( String(opts.argument.trim().split(' ')[0]).length+1 ).trim();
+
+      words = opts.argument.split(' ');
+      // words.shift();
+      // var messageToSend = words.join(' ');
+      var intervalTime = Number(words.pop());
+      var messageToSend = words;
+      
+      // loiter();
+      client.say(sendTo, `${intervalTime} minute auto-repeat until !repeatoff or new !repeat\n${messageToSend}`);
+  
+      global.repeatsetting = "off";
+      clearInterval(global.repeatInterval);
+  
+      function repeaterfxn(){ 
+        if (global.repeatsetting != "off") { 
+          client.say(sendTo, messageToSend.toString());
+        } else {
+          clearInterval(global.repeatInterval);
+        }
+      };
+  
+      function activateRepeater(){
+        global.repeatsetting = "on";
+        global.repeatInterval = setInterval( function(){repeaterfxn()}, intervalTime * 1000);
+      };
+  
+      setTimeout(function(){activateRepeater()}, 3000);
+
+      // messageToSend = opts.argument.substring( String(opts.argument.trim().split(' ')[0]).length+1 ).trim();
+  };
+
+  internalCommand.repeatoff = function(opts) {
+    global.repeatsetting = "off";
+    clearInterval(global.repeatInterval);
+    client.say(sendTo, "Auto-Repeat off.");
+  };
 
   internalCommand.approach = function(opts) {
       // if (isChannel(opts.argument)) {
@@ -149,8 +187,13 @@ module.exports = function(client, from, to, text, message) {
       var approachmessage = approachdata.concat(" ", workingairspace);
       client.say(sendTo, approachmessage.toString());
       delete require.cache[require.resolve('./simulatepositdata/approach.js')]
-    };
+  };
 
+  internalCommand.loiteroff = function(opts) {
+    global.intervalsetting = "off";
+    clearInterval(global.loiterInterval1);
+    client.say(sendTo, "Loiter autorepeat off");
+  };
 
   internalCommand.loiter = function(opts) {
     if (opts.argument.length > 1) {

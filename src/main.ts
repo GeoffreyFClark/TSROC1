@@ -62,6 +62,14 @@ client.addListener("registered", function() {
 // ​Example 5: !elev
 // Changing Altitude (CALLSIGN | Elev | Current Airspace | FLXXX for FLXXX deconflicted with Callsigns sharing the same airspace)
 
+//customizable command: 
+// !1 !2 !3 !4 !5
+// nameable, add on timer interval
+
+//regex (regular expressions) text-pattern matching
+//format error catching
+//
+
 // Don't sub TX or Elev, lets people know we are changing alt
 // Randomized altitude, location, fix callsign
 
