@@ -328,7 +328,7 @@ module.exports = function(client, from, to, text, message) {
       client.send('MODE', sendTo, '-o', opts.argument);
     }
   };
-
+//test
   /*
    * Standard IRC /mode
    * ---------------------------------------------------------------------------
