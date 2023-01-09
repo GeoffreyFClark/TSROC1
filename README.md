@@ -26,4 +26,6 @@ Jan 4: Added !repeat and !repeatoff
 
 Jan 6: Continuation of project transferred over to TSIRCBot branch for code cleanup, optimization, and further implementation of TypeScript.
 
+.
+
 This branch is now an archive for reference purposes.
