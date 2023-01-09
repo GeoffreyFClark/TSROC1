@@ -12,32 +12,27 @@ export default function commandHandler(client: any, from: any, to: any, text: st
     
     const internalCommand: { [key: string]: (options: Options) => void } = {};
     
-    const opts: Options = {
+    let opts: Options = {
     command: text.split(" ")[0].replace("!", "").trim(),
     argument: text.substring(text.split(" ")[0].length).trim(),
     messageToSend: "",
     };
 
     let savedairspace: string;
-
-    let intervalSetting:string;
-    let loiterInterval:string;
-
-    let repeatSetting:string;
-    let repeatInterval:string;
+    let loiterSetting: boolean, loiterInterval: string;
+    let repeatSetting: boolean, repeatInterval: string;
 
     internalCommand.help = function(opts) {
         client.say(to, buildHelpMsg.toString());
-      };
+    };
 
     internalCommand.join = (opts: Options) => {
         client.join(opts.argument);
     };
     
     internalCommand.airspace = (opts: Options) => {
-    savedairspace = opts.argument;
-    opts.messageToSend = `Airspace updated to: ${opts.argument}`;
-    client.say(to, opts.messageToSend);
+        savedairspace = opts.argument;
+        client.say(to, `Airspace updated to: ${savedairspace}`);
     };
 
 };

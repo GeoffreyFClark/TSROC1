@@ -6,16 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const help_1 = __importDefault(require("./help"));
 function commandHandler(client, from, to, text, message) {
     const internalCommand = {};
-    const opts = {
+    let opts = {
         command: text.split(" ")[0].replace("!", "").trim(),
         argument: text.substring(text.split(" ")[0].length).trim(),
         messageToSend: "",
     };
     let savedairspace;
-    let intervalSetting;
-    let loiterInterval;
-    let repeatSetting;
-    let repeatInterval;
+    let loiterSetting, loiterInterval;
+    let repeatSetting, repeatInterval;
     internalCommand.help = function (opts) {
         client.say(to, help_1.default.toString());
     };
@@ -24,8 +22,7 @@ function commandHandler(client, from, to, text, message) {
     };
     internalCommand.airspace = (opts) => {
         savedairspace = opts.argument;
-        opts.messageToSend = `Airspace updated to: ${opts.argument}`;
-        client.say(to, opts.messageToSend);
+        client.say(to, `Airspace updated to: ${savedairspace}`);
     };
 }
 exports.default = commandHandler;

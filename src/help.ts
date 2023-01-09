@@ -10,7 +10,7 @@ const buildHelpMsg: HelpFunction = () => {
     helpMsg += ', !transit <new airspace>';
     helpMsg += ', !egress';
     helpMsg += ', !elev <new elevation>';
-    helpMsg += ', !airspace';
+    helpMsg += ', !airspace <updated airspace>';
     helpMsg += ', !repeat <text to be repeated> <interval in minutes>';
     helpMsg += ', !repeatoff';
     helpMsg += ', !join <#additionalchanneltojoin>'
