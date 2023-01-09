@@ -1,8 +1,6 @@
 npm install typescript ts-node -g
 
-npm install irc -g
-
-npm install fs -g
+irc and fs module
 
 npm i --save-dev @types/node
 
@@ -10,7 +8,9 @@ npm i --save-dev @types/node
 
 .
 
-Run using: "node main.ts" or "npx ts-node main.ts" (main.ts located in src)
+(main.ts located in src)
+
+"node main.ts" or "npx ts-node main.ts" 
 
 .
 
