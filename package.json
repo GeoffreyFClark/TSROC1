@@ -2,13 +2,14 @@
   "name": "tsircbot",
   "version": "1.0.0",
   "description": "ircbotcleanedupintypescript",
-  "main": "./src/main.ts",
+  "main": "./src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "G F Clark",
   "license": "ISC",
   "devDependencies": {
+    "@types/irc": "^0.5.1",
     "@types/node": "^18.11.18"
   },
   "dependencies": {
