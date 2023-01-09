@@ -17,6 +17,9 @@ Alternative method to download this project via terminal:
 4. Open a terminal or command prompt and navigate to the project directory.
 5. Install the dependencies for the project by running the following command: npm install
 6. Install the TypeScript compiler (tsc) if not already installed by running the following command: npm install -g typescript
-7. Build the project by running the following command: tsc
+7. Build the project by running the following command to compile /src files into /dist: tsc
 8. Run the compiled JavaScript code (located in dist folder) using Node.js by running the following command: node index.js
 
+. 
+
+See config folder for config.json options (e.g. server, channel, bot username, etc)
