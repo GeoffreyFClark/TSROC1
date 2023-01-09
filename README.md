@@ -20,3 +20,6 @@ Alternative method to download this project via terminal:
 7. Build the project by running the following command to compile /src files into /dist: tsc
 8. Run the compiled JavaScript code (located in dist folder) using Node.js by running the following command: node index.js
 
+. 
+
+See config folder for config.json options (e.g. server, channel, bot username, etc)
