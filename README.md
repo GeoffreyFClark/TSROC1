@@ -24,6 +24,6 @@ Dec 15: Added timer to !loiter and added !loiteroff; also made !loiter turn off 
 
 Jan 4: Added !repeat and !repeatoff
 
-Jan 6: Continuation of project transferred over to TSIRCBot branch for code cleanup and increased implementation of TypeScript.
+Jan 6: Continuation of project transferred over to TSIRCBot branch for code cleanup, optimization, and further implementation of TypeScript.
 
 This branch is now an archive for reference purposes.
