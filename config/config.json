@@ -1,0 +1,22 @@
+{
+    "admins": ["Clark!~Clark@EA74C03C.92CF25AD.43153B3E.IP"],
+    "server": "eu.chat4all.org",
+    "userName": "MQ9HelperBot",
+    "realName": "MQ9 IRC Bot",
+    "port": 6667,
+    "debug": false,
+    "showErrors": false,
+    "autoRejoin": true,
+    "autoConnect": true,
+    "channels": ["#mircbottest2"],
+    "secure": false,
+    "selfSigned": false,
+    "certExpired": false,
+    "floodProtection": false,
+    "floodProtectionDelay": 1000,
+    "sasl": false,
+    "stripColors": false,
+    "channelPrefixes": "&#",
+    "messageSplit": 512
+  }
+  
