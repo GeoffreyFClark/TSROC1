@@ -1,8 +1,6 @@
 npm install typescript ts-node -g
 
-npm install irc -g
-
-npm install fs -g
+irc and fs module
 
 npm i --save-dev @types/node
 
@@ -10,7 +8,9 @@ npm i --save-dev @types/node
 
 .
 
-Run using: "node main.ts" or "npx ts-node main.ts" (main.ts located in src)
+(main.ts located in src)
+
+"node main.ts" or "npx ts-node main.ts" 
 
 .
 
@@ -20,4 +20,12 @@ Dec 8: Bot successfully scraped + sent simulated position data that was randomly
 
 Dec 14: Added !approach !loiter !transit !elev !egress !airspace
 
-Dec 15: Added timer to !loiter and added !loiteroff
+Dec 15: Added timer to !loiter and added !loiteroff; also made !loiter turn off if no longer loitering e.g. !egress is used
+
+Jan 4: Added !repeat and !repeatoff
+
+Jan 6: Continuation of project transferred over to TSIRCBot branch for code cleanup, optimization, and further implementation of TypeScript.
+
+.
+
+This branch is now an archive for reference purposes.
