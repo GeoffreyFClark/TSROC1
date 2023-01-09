@@ -28,6 +28,6 @@ module.exports = function() {
   help.buildString();
 
   // a message for the IRC bot to send to the admin user who called !reload
-  return 'Commands, observeres, greetings & auto-op lists are now reloaded!';
+  return 'Commands, observers, greetings & auto-op lists are now reloaded!';
 
 };
