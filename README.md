@@ -12,6 +12,7 @@ Alternative method to download this project via terminal:
 2. Navigate to the directory where you want to download this project branch. 
 3. Run the following command: git clone -b TSIRCBot https://github.com/GeoffreyFClark/TSROC1.git
 
+.
 
 4. Open a terminal or command prompt and navigate to the project directory.
 5. Install the dependencies for the project by running the following command: npm install
