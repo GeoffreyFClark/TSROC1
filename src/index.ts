@@ -1,5 +1,4 @@
 import * as irc from 'irc'; 
-
 import {buildHelpMsg} from './help';
 import {commandHandler} from './command-handler';
 
