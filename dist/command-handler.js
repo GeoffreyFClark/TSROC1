@@ -37,6 +37,7 @@ function commandHandler(client, from, to, text, message) {
     let savedairspace;
     let loiterSetting, loiterInterval;
     let repeatSetting, repeatInterval, repeatMsg;
+    internalCommand[opts.command](opts);
     function loiterOff() {
         loiterSetting = false;
         clearInterval(loiterInterval);

@@ -1,6 +1,7 @@
 import * as irc from 'irc'; 
 import {buildHelpMsg} from './help';
 import {commandHandler} from './command-handler';
+// var commandHandler = require('./command-handler')
 
 let config: { [key: string]: any } = require('../config/config.json');
 let client = new irc.Client(config.server, config.userName, config);

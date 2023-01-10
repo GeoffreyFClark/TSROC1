@@ -18,9 +18,21 @@ export function commandHandler(client: any, from: any, to: any, text: string, me
         messageToSend: "",
     };
 
+// module.exports = function(client, from, to, text, message) {
+
+//     var internalCommand = {};// lookup table for internal commands
+  
+//     var opts = {
+//       command: String(text.split(' ')[0]).replace('!', '').trim(),
+//       argument: text.substring(String(text.split(' ')[0]).length).trim(),
+//       messageToSend: ''
+//     };
+
     let savedairspace: string;
     let loiterSetting: boolean, loiterInterval: number;
     let repeatSetting: boolean, repeatInterval: number, repeatMsg: string;
+
+    internalCommand[opts.command](opts);
 
     function loiterOff() {
         loiterSetting = false;
