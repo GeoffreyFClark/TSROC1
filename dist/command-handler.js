@@ -60,10 +60,10 @@ function commandHandler(client, from, to, text, message) {
     internalCommand.help = function (opts) {
         client.say(to, help_1.buildHelpMsg.toString());
     };
-    internalCommand.join = (opts) => {
+    internalCommand.join = function (opts) {
         client.join(opts.argument);
     };
-    internalCommand.airspace = (opts) => {
+    internalCommand.airspace = function (opts) {
         savedairspace = opts.argument;
         client.say(to, `Airspace updated to: ${savedairspace}`);
     };

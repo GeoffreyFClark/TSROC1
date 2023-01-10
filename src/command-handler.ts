@@ -5,17 +5,17 @@ import * as SimulateAltCGRS from './simulate-alt-cgrs-data'
 export function commandHandler(client: any, from: any, to: any, text: string, message: any) {
     
     interface Options {
-    command: string;
-    argument: string;
-    messageToSend: string;
+        command: string;
+        argument: any;
+        messageToSend: string;
     }
     
     let internalCommand: { [key: string]: (options: Options) => void } = {};
     
     let opts: Options = {
-    command: text.split(" ")[0].replace("!", "").trim(),
-    argument: text.substring(text.split(" ")[0].length).trim(),
-    messageToSend: "",
+        command: text.split(" ")[0].replace("!", "").trim(),
+        argument: text.substring(text.split(" ")[0].length).trim(),
+        messageToSend: "",
     };
 
     let savedairspace: string;
@@ -47,11 +47,11 @@ export function commandHandler(client: any, from: any, to: any, text: string, me
         client.say(to, buildHelpMsg.toString());
     };
 
-    internalCommand.join = (opts) => {
+    internalCommand.join = function(opts) {
         client.join(opts.argument);
     };
     
-    internalCommand.airspace = (opts) => {
+    internalCommand.airspace = function(opts) {
         savedairspace = opts.argument;
         client.say(to, `Airspace updated to: ${savedairspace}`);
     };
