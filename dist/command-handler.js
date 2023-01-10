@@ -22,15 +22,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const help_1 = __importDefault(require("./help"));
+exports.commandHandler = void 0;
+const help_1 = require("./help");
+const simulate_FL_only_1 = require("./simulate-FL-only");
 const SimulateAltCGRS = __importStar(require("./simulate-alt-cgrs-data"));
-const SimCurrentFL = __importStar(require("./simulate-FL-only"));
 function commandHandler(client, from, to, text, message) {
-    const internalCommand = {};
+    let internalCommand = {};
     let opts = {
         command: text.split(" ")[0].replace("!", "").trim(),
         argument: text.substring(text.split(" ")[0].length).trim(),
@@ -38,9 +36,29 @@ function commandHandler(client, from, to, text, message) {
     };
     let savedairspace;
     let loiterSetting, loiterInterval;
-    let repeatSetting, repeatInterval;
+    let repeatSetting, repeatInterval, repeatMsg;
+    function loiterOff() {
+        loiterSetting = false;
+        clearInterval(loiterInterval);
+    }
+    ;
+    function loiterOn() {
+        loiterSetting = true;
+        setInterval(client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${simulate_FL_only_1.SimCurrentFL})`), 15 * 1000);
+    }
+    ;
+    function repeatOff() {
+        repeatSetting = false;
+        clearInterval(repeatInterval);
+    }
+    ;
+    function repeatOn() {
+        repeatSetting = true;
+        setInterval(client.say(to, repeatMsg), repeatInterval * 1000);
+    }
+    ;
     internalCommand.help = function (opts) {
-        client.say(to, help_1.default.toString());
+        client.say(to, help_1.buildHelpMsg.toString());
     };
     internalCommand.join = (opts) => {
         client.join(opts.argument);
@@ -57,20 +75,41 @@ function commandHandler(client, from, to, text, message) {
         client.say(to, `<CALLSIGN> | Ingress | ${SimulateAltCGRS} | Desired CGRS: ${opts.argument}`);
     };
     internalCommand.elev = function (opts) {
-        client.say(to, `<CALLSIGN> | Elev | Current CGRS: ${savedairspace} | FL${SimCurrentFL} for ${opts.argument}`);
+        client.say(to, `<CALLSIGN> | Elev | Current CGRS: ${savedairspace} | FL${simulate_FL_only_1.SimCurrentFL} for ${opts.argument}`);
     };
     internalCommand.transit = function (opts) {
         savedairspace = opts.argument;
-        client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${SimCurrentFL}`);
-        loiterSetting = false;
-        clearInterval(loiterInterval);
+        client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${simulate_FL_only_1.SimCurrentFL}`);
+        loiterOff();
     };
     internalCommand.egress = function (opts) {
-        client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${SimCurrentFL}`);
-        loiterSetting = false;
-        clearInterval(loiterInterval);
+        client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${simulate_FL_only_1.SimCurrentFL}`);
+        loiterOff();
+    };
+    internalCommand.loiter = function (opts) {
+        loiterOff();
+        if (opts.argument.length > 1) {
+            savedairspace = opts.argument;
+        }
+        ;
+        client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${simulate_FL_only_1.SimCurrentFL})`);
+        client.say(to, "15 sec auto-repeat until !egress !transit !loiteroff or new !loiter");
+        setTimeout(loiterOn, 3000);
+    };
+    internalCommand.repeat = function (opts) {
+        repeatOff();
+        let words = opts.argument.split(' ');
+        words.shift();
+        repeatInterval = Number(words.pop());
+        repeatMsg = words.join(' ');
+        client.say(to, `${repeatInterval} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
+        setTimeout(repeatOn, 3000);
+    };
+    internalCommand.repeatoff = function (opts) {
+        repeatOff();
+        client.say(to, "Auto-Repeat off.");
     };
 }
-exports.default = commandHandler;
+exports.commandHandler = commandHandler;
 ;
 //# sourceMappingURL=command-handler.js.map

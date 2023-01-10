@@ -22,23 +22,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const irc = __importStar(require("irc"));
-const help_1 = __importDefault(require("./help"));
-const command_handler_1 = __importDefault(require("./command-handler"));
+const help_1 = require("./help");
+const command_handler_1 = require("./command-handler");
 let config = require('../config/config.json');
 let client = new irc.Client(config.server, config.userName, config);
 client.addListener("registered", function () {
     console.log("Bot is now registered with the server " + config.server);
-    (0, help_1.default)();
+    (0, help_1.buildHelpMsg)();
 });
 client.addListener('error', function (message) {
     console.log('error: ', message);
 });
 client.addListener('message', function (from, to, text, message) {
-    (0, command_handler_1.default)(client, from, to, text, message);
+    (0, command_handler_1.commandHandler)(client, from, to, text, message);
 });
 //# sourceMappingURL=index.js.map

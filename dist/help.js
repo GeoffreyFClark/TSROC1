@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const buildHelpMsg = () => {
+exports.buildHelpMsg = void 0;
+function buildHelpMsg() {
     let helpMsg = 'The available commands are: ';
     helpMsg += '\n!help (this command you just ran)';
     helpMsg += ', !position';
     helpMsg += ', !approach <new airspace>';
-    helpMsg += ', !loiter (autorepeats every 30min)';
+    helpMsg += ', !loiter <optional: new airspace, else current airspace stated> (autorepeats every 30min)';
     helpMsg += ', !loiteroff';
     helpMsg += ', !transit <new airspace>';
     helpMsg += ', !egress';
@@ -15,6 +16,7 @@ const buildHelpMsg = () => {
     helpMsg += ', !repeatoff';
     helpMsg += ', !join <#additionalchanneltojoin>';
     return helpMsg;
-};
-exports.default = buildHelpMsg;
+}
+exports.buildHelpMsg = buildHelpMsg;
+;
 //# sourceMappingURL=help.js.map

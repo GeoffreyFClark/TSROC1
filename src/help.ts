@@ -1,11 +1,9 @@
-type HelpFunction = () => string;
-
-const buildHelpMsg: HelpFunction = () => {
+export function buildHelpMsg(): string {
     let helpMsg = 'The available commands are: ';
     helpMsg += '\n!help (this command you just ran)';
     helpMsg += ', !position';
     helpMsg += ', !approach <new airspace>';
-    helpMsg += ', !loiter (autorepeats every 30min)';
+    helpMsg += ', !loiter <optional: new airspace, else current airspace stated> (autorepeats every 30min)';
     helpMsg += ', !loiteroff';
     helpMsg += ', !transit <new airspace>';
     helpMsg += ', !egress';
@@ -16,5 +14,3 @@ const buildHelpMsg: HelpFunction = () => {
     helpMsg += ', !join <#additionalchanneltojoin>'
     return helpMsg;
 };
-
-export default buildHelpMsg;

@@ -1,9 +1,8 @@
-import buildHelpMsg from './help';
-import * as irc from 'irc';
+import {buildHelpMsg} from './help';
+import {SimCurrentFL} from './simulate-FL-only'
 import * as SimulateAltCGRS from './simulate-alt-cgrs-data'
-import * as SimCurrentFL from './simulate-FL-only'
 
-export default function commandHandler(client: any, from: any, to: any, text: string, message: any) {
+export function commandHandler(client: any, from: any, to: any, text: string, message: any) {
     
     interface Options {
     command: string;
@@ -11,7 +10,7 @@ export default function commandHandler(client: any, from: any, to: any, text: st
     messageToSend: string;
     }
     
-    const internalCommand: { [key: string]: (options: Options) => void } = {};
+    let internalCommand: { [key: string]: (options: Options) => void } = {};
     
     let opts: Options = {
     command: text.split(" ")[0].replace("!", "").trim(),
@@ -20,18 +19,39 @@ export default function commandHandler(client: any, from: any, to: any, text: st
     };
 
     let savedairspace: string;
-    let loiterSetting: boolean, loiterInterval: string;
-    let repeatSetting: boolean, repeatInterval: string;
+    let loiterSetting: boolean, loiterInterval: number;
+    let repeatSetting: boolean, repeatInterval: number, repeatMsg: string;
 
-    internalCommand.help = function(opts: Options) {
+    function loiterOff() {
+        loiterSetting = false;
+        clearInterval(loiterInterval);
+    };
+    
+    function loiterOn() {
+        loiterSetting = true;
+        setInterval(client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFL})`), 15 * 1000);
+    };
+
+    function repeatOff() {
+        repeatSetting = false;
+        clearInterval(repeatInterval);
+    };
+
+    function repeatOn() {
+        repeatSetting = true;
+        setInterval(client.say(to, repeatMsg), repeatInterval * 1000);
+    };
+
+
+    internalCommand.help = function(opts) {
         client.say(to, buildHelpMsg.toString());
     };
 
-    internalCommand.join = (opts: Options) => {
+    internalCommand.join = (opts) => {
         client.join(opts.argument);
     };
     
-    internalCommand.airspace = (opts: Options) => {
+    internalCommand.airspace = (opts) => {
         savedairspace = opts.argument;
         client.say(to, `Airspace updated to: ${savedairspace}`);
     };
@@ -52,17 +72,45 @@ export default function commandHandler(client: any, from: any, to: any, text: st
     internalCommand.transit = function(opts) {
         savedairspace = opts.argument;
         client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${SimCurrentFL}`);
-
-        loiterSetting = false;
-        clearInterval(loiterInterval);
+        loiterOff();
     };
 
     internalCommand.egress = function(opts) {
         client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${SimCurrentFL}`);
-    
-        loiterSetting = false;
-        clearInterval(loiterInterval);
+        loiterOff();
     };
 
+    internalCommand.loiter = function(opts) {
+        loiterOff();
+        if (opts.argument.length > 1) {savedairspace = opts.argument};
+
+        client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFL})`)
+
+        client.say(to, "15 sec auto-repeat until !egress !transit !loiteroff or new !loiter");
+        setTimeout(loiterOn, 3000);
+    }; 
+    
+
+    internalCommand.repeat = function(opts) {
+        repeatOff();
+
+        // let words: Array<string> = opts.argument.substring( String(opts.argument.trim().split(' ')[0]).length+1 ).trim();
+        // words = opts.argument.split(' ');
+        // var repeatInterval: Number = Number(words.pop());
+        // var repeatMsg = words;
+
+        let words: string[] = opts.argument.split(' ');
+        words.shift();
+        repeatInterval = Number(words.pop());
+        repeatMsg = words.join(' ');
+
+        client.say(to, `${repeatInterval} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
+        setTimeout(repeatOn, 3000);
+    };
+
+    internalCommand.repeatoff = function(opts) {
+        repeatOff();
+        client.say(to, "Auto-Repeat off.");
+    };
 
 };
