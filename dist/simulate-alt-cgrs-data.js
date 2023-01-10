@@ -28,7 +28,7 @@ let SimulateAltCGRS = () => {
         return result.toString();
     }
     ;
-    let CGRSMsg = `Altitude ${makealtitude} | CGRS: ${part1cgrs}` + makeletters(2) + makenumbers(1);
+    let CGRSMsg = `Altitude: ${makealtitude} | CGRS: ${part1cgrs}` + makeletters(2) + makenumbers(1);
     return CGRSMsg;
 };
 exports.default = SimulateAltCGRS;
