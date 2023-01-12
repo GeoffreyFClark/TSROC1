@@ -28,16 +28,16 @@ const help_1 = require("./help");
 const simulate_FL_only_1 = require("./simulate-FL-only");
 const SimulateAltCGRS = __importStar(require("./simulate-alt-cgrs-data"));
 function commandHandler(client, from, to, text, message) {
+    ;
     let internalCommand = {};
     let opts = {
-        command: text.split(" ")[0].replace("!", "").trim(),
-        argument: text.substring(text.split(" ")[0].length).trim(),
+        command: String(text.split(' ')[0]).replace('!', '').trim(),
+        argument: text.substring(String(text.split(' ')[0]).length).trim(),
         messageToSend: "",
     };
     let savedairspace;
     let loiterSetting, loiterInterval;
     let repeatSetting, repeatInterval, repeatMsg;
-    internalCommand[opts.command](opts);
     function loiterOff() {
         loiterSetting = false;
         clearInterval(loiterInterval);
@@ -110,6 +110,16 @@ function commandHandler(client, from, to, text, message) {
         repeatOff();
         client.say(to, "Auto-Repeat off.");
     };
+    if (text && text.length > 2 && text[0] == '!') {
+        if (typeof internalCommand[opts.command] === 'function') {
+            internalCommand[opts.command](opts);
+        }
+        else {
+            client.say(to, "Invalid command");
+        }
+        ;
+    }
+    ;
 }
 exports.commandHandler = commandHandler;
 ;

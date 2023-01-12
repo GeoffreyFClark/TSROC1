@@ -8,31 +8,19 @@ export function commandHandler(client: any, from: any, to: any, text: string, me
         command: string;
         argument: any;
         messageToSend: string;
-    }
+    };
     
     let internalCommand: { [key: string]: (options: Options) => void } = {};
     
     let opts: Options = {
-        command: text.split(" ")[0].replace("!", "").trim(),
-        argument: text.substring(text.split(" ")[0].length).trim(),
+        command: String(text.split(' ')[0]).replace('!', '').trim(),
+        argument: text.substring(String(text.split(' ')[0]).length).trim(),
         messageToSend: "",
     };
-
-// module.exports = function(client, from, to, text, message) {
-
-//     var internalCommand = {};// lookup table for internal commands
-  
-//     var opts = {
-//       command: String(text.split(' ')[0]).replace('!', '').trim(),
-//       argument: text.substring(String(text.split(' ')[0]).length).trim(),
-//       messageToSend: ''
-//     };
 
     let savedairspace: string;
     let loiterSetting: boolean, loiterInterval: number;
     let repeatSetting: boolean, repeatInterval: number, repeatMsg: string;
-
-    internalCommand[opts.command](opts);
 
     function loiterOff() {
         loiterSetting = false;
@@ -123,6 +111,12 @@ export function commandHandler(client: any, from: any, to: any, text: string, me
     internalCommand.repeatoff = function(opts) {
         repeatOff();
         client.say(to, "Auto-Repeat off.");
+    };
+
+    if (text && text.length > 2 && text[0] == '!') {
+        if (typeof internalCommand[opts.command]  === 'function') {
+            internalCommand[opts.command](opts);
+        } else { client.say(to, "Invalid command") };
     };
 
 };
