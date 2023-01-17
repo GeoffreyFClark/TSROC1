@@ -16,7 +16,7 @@ export function SimAltCGRSFunction(): string {
         return result.toString();
     };
 
-    function MakeNumbers(length: number) {    //Random number generator, parameter = number of digits to be generated
+    function MakeNumbers(length: number) {    //Random digit generator that excludes 0, parameter = number of digits to be generated
         var result: string = '';
         var characters: string = '123456789';
         for ( var i = 0; i < length; i++ ) {
