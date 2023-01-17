@@ -18,4 +18,3 @@ client.addListener('error', function(message) {
 client.addListener('message', function(from, to, text) {
     CommandHandler(client, from, to, text); //handles commands starting with "!"
 });
-

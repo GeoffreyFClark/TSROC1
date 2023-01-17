@@ -66,22 +66,25 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         LoiterOff();
     };
 
-    CommandTable.loiter = function(opts) { // To Do: Add check for whether last character(s) constitute number for interval, else error msg
+    CommandTable.loiter = function(opts) { 
         LoiterOff();
 
         const words = opts.argument.split(' ');
         const loiterFrequency = Number(words.pop());
-        if (String(words).length > 1) {savedairspace = String(words)};
 
-        client.say(to, `${loiterFrequency} minute auto-repeat until !egress !transit !loiteroff or new !loiter`);
-        client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
+        if (typeof loiterFrequency === "number") {
+            if (String(words).length > 1) {savedairspace = String(words)};
 
-        setTimeout(() => {
-            loiterSetting = true;
-            loiterInterval = setInterval(() => {
-                client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
-            }, loiterFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
-        }, 3000);
+            client.say(to, `${loiterFrequency} minute auto-repeat until !egress !transit !loiteroff or new !loiter`);
+            client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
+
+            setTimeout(() => {
+                loiterSetting = true;
+                loiterInterval = setInterval(() => {
+                    client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
+                }, loiterFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
+            }, 3000);
+        } else { client.say(to, "Please append a time interval for auto-repetition. Format: !loiter <optional new airspace> <repeat interval in minutes>") };
     }; 
 
     CommandTable.loiteroff = function(opts) {
@@ -89,21 +92,23 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         client.say(to, "Loiter Auto-Repeat off.");
     };
 
-    CommandTable.repeat = function(opts) { // To Do: Add check for whether last character(s) constitute number for interval, else error msg
+    CommandTable.repeat = function(opts) { 
         RepeatOff();
 
         const words = opts.argument.split(' ');
         const repeatFrequency = Number(words.pop());
         repeatMsg = words.join(' ');
 
-        client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
+        if (typeof repeatFrequency === "number") {
+            client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
 
-        setTimeout(() => {
-            repeatSetting = true;
-            repeatInterval = setInterval(() => {
-                client.say(to, repeatMsg);
-            }, repeatFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
-        }, 3000);
+            setTimeout(() => {
+                repeatSetting = true;
+                repeatInterval = setInterval(() => {
+                    client.say(to, repeatMsg);
+                }, repeatFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
+            }, 3000);
+        } else {client.say(to, "Please append a time interval for auto-repetition. Format: !loiter <optional new airspace> <repeat interval in minutes>")};
     };
 
     CommandTable.repeatoff = function(opts) {
