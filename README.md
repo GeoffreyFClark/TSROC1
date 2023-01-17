@@ -26,4 +26,4 @@ See config folder for config.json options (e.g. server, channel, bot username, e
 
 
 
-made by Geoffrey F. Clark
+Created by Geoffrey F. Clark
