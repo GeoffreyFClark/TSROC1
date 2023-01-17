@@ -1,118 +1,98 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commandHandler = void 0;
+exports.CommandHandler = void 0;
 const help_1 = require("./help");
-const simulate_FL_only_1 = require("./simulate-FL-only");
-const SimulateAltCGRS = __importStar(require("./simulate-alt-cgrs-data"));
-function commandHandler(client, from, to, text, message) {
+const simulate_data_1 = require("./simulate-data");
+let savedairspace;
+let loiterSetting, loiterInterval;
+let repeatSetting, repeatInterval, repeatMsg;
+function CommandHandler(client, from, to, text) {
     ;
-    let internalCommand = {};
     let opts = {
         command: String(text.split(' ')[0]).replace('!', '').trim(),
         argument: text.substring(String(text.split(' ')[0]).length).trim(),
-        messageToSend: "",
     };
-    let savedairspace;
-    let loiterSetting, loiterInterval;
-    let repeatSetting, repeatInterval, repeatMsg;
-    function loiterOff() {
+    let CommandTable = {};
+    function LoiterOff() {
         loiterSetting = false;
         clearInterval(loiterInterval);
     }
     ;
-    function loiterOn() {
-        loiterSetting = true;
-        setInterval(client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${simulate_FL_only_1.SimCurrentFL})`), 15 * 1000);
-    }
-    ;
-    function repeatOff() {
+    function RepeatOff() {
         repeatSetting = false;
         clearInterval(repeatInterval);
     }
     ;
-    function repeatOn() {
-        repeatSetting = true;
-        setInterval(client.say(to, repeatMsg), repeatInterval * 1000);
-    }
-    ;
-    internalCommand.help = function (opts) {
-        client.say(to, help_1.buildHelpMsg.toString());
+    CommandTable.help = function (opts) {
+        client.say(from, (0, help_1.HelpMsg)());
     };
-    internalCommand.join = function (opts) {
+    CommandTable.join = function (opts) {
         client.join(opts.argument);
     };
-    internalCommand.airspace = function (opts) {
+    CommandTable.airspace = function (opts) {
         savedairspace = opts.argument;
         client.say(to, `Airspace updated to: ${savedairspace}`);
     };
-    internalCommand.position = function (opts) {
-        client.say(to, SimulateAltCGRS.toString());
+    CommandTable.position = function (opts) {
+        client.say(to, (0, simulate_data_1.SimAltCGRSFunction)());
     };
-    internalCommand.approach = function (opts) {
+    CommandTable.approach = function (opts) {
         savedairspace = opts.argument;
-        client.say(to, `<CALLSIGN> | Ingress | ${SimulateAltCGRS} | Desired CGRS: ${opts.argument}`);
+        client.say(to, `<CALLSIGN> | Ingress | ${(0, simulate_data_1.SimAltCGRSFunction)()} | Desired CGRS: ${opts.argument}`);
     };
-    internalCommand.elev = function (opts) {
-        client.say(to, `<CALLSIGN> | Elev | Current CGRS: ${savedairspace} | FL${simulate_FL_only_1.SimCurrentFL} for ${opts.argument}`);
+    CommandTable.elev = function (opts) {
+        client.say(to, `<CALLSIGN> | Elev | Current CGRS: ${savedairspace} | FL${(0, simulate_data_1.SimCurrentFLOnly)()} for ${opts.argument}`);
     };
-    internalCommand.transit = function (opts) {
+    CommandTable.transit = function (opts) {
+        client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${(0, simulate_data_1.SimCurrentFLOnly)()}`);
         savedairspace = opts.argument;
-        client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${simulate_FL_only_1.SimCurrentFL}`);
-        loiterOff();
+        LoiterOff();
     };
-    internalCommand.egress = function (opts) {
-        client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${simulate_FL_only_1.SimCurrentFL}`);
-        loiterOff();
+    CommandTable.egress = function (opts) {
+        client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${(0, simulate_data_1.SimCurrentFLOnly)()}`);
+        LoiterOff();
     };
-    internalCommand.loiter = function (opts) {
-        loiterOff();
-        if (opts.argument.length > 1) {
-            savedairspace = opts.argument;
+    CommandTable.loiter = function (opts) {
+        LoiterOff();
+        const words = opts.argument.split(' ');
+        const loiterFrequency = Number(words.pop());
+        if (String(words).length > 1) {
+            savedairspace = String(words);
         }
         ;
-        client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${simulate_FL_only_1.SimCurrentFL})`);
-        client.say(to, "15 sec auto-repeat until !egress !transit !loiteroff or new !loiter");
-        setTimeout(loiterOn, 3000);
+        client.say(to, `${loiterFrequency} minute auto-repeat until !egress !transit !loiteroff or new !loiter`);
+        client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${(0, simulate_data_1.SimCurrentFLOnly)()}`);
+        setTimeout(() => {
+            loiterSetting = true;
+            loiterInterval = setInterval(() => {
+                client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${(0, simulate_data_1.SimCurrentFLOnly)()}`);
+            }, loiterFrequency * 1000 * 60);
+        }, 3000);
     };
-    internalCommand.repeat = function (opts) {
-        repeatOff();
-        let words = opts.argument.split(' ');
-        words.shift();
-        repeatInterval = Number(words.pop());
+    CommandTable.loiteroff = function (opts) {
+        LoiterOff();
+        client.say(to, "Loiter Auto-Repeat off.");
+    };
+    CommandTable.repeat = function (opts) {
+        RepeatOff();
+        const words = opts.argument.split(' ');
+        const repeatFrequency = Number(words.pop());
         repeatMsg = words.join(' ');
-        client.say(to, `${repeatInterval} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
-        setTimeout(repeatOn, 3000);
+        client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
+        setTimeout(() => {
+            repeatSetting = true;
+            repeatInterval = setInterval(() => {
+                client.say(to, repeatMsg);
+            }, repeatFrequency * 1000 * 60);
+        }, 3000);
     };
-    internalCommand.repeatoff = function (opts) {
-        repeatOff();
+    CommandTable.repeatoff = function (opts) {
+        RepeatOff();
         client.say(to, "Auto-Repeat off.");
     };
     if (text && text.length > 2 && text[0] == '!') {
-        if (typeof internalCommand[opts.command] === 'function') {
-            internalCommand[opts.command](opts);
+        if (typeof CommandTable[opts.command] === 'function') {
+            CommandTable[opts.command](opts);
         }
         else {
             client.say(to, "Invalid command");
@@ -121,6 +101,6 @@ function commandHandler(client, from, to, text, message) {
     }
     ;
 }
-exports.commandHandler = commandHandler;
+exports.CommandHandler = CommandHandler;
 ;
 //# sourceMappingURL=command-handler.js.map

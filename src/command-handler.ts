@@ -1,121 +1,119 @@
-import {buildHelpMsg} from './help';
-import {SimCurrentFL} from './simulate-FL-only'
-import * as SimulateAltCGRS from './simulate-alt-cgrs-data'
+import {HelpMsg} from './help';
+import {SimAltCGRSFunction, SimCurrentFLOnly} from './simulate-data'
 
-export function commandHandler(client: any, from: any, to: any, text: string, message: any) {
+let savedairspace: string;
+let loiterSetting: boolean, loiterInterval: any;
+let repeatSetting: boolean, repeatInterval: any, repeatMsg: string;
+
+export function CommandHandler(client: any, from: any, to: any, text: string) {
     
     interface Options {
         command: string;
         argument: any;
-        messageToSend: string;
     };
-    
-    let internalCommand: { [key: string]: (options: Options) => void } = {};
     
     let opts: Options = {
-        command: String(text.split(' ')[0]).replace('!', '').trim(),
-        argument: text.substring(String(text.split(' ')[0]).length).trim(),
-        messageToSend: "",
+        command: String(text.split(' ')[0]).replace('!', '').trim(), //defines first word after '!' as command for .property of CommandTable
+        argument: text.substring(String(text.split(' ')[0]).length).trim(), //defines text following !command as opts.argument
     };
 
-    let savedairspace: string;
-    let loiterSetting: boolean, loiterInterval: number;
-    let repeatSetting: boolean, repeatInterval: number, repeatMsg: string;
+    let CommandTable: { [key: string]: (options: Options) => void } = {}; //Creates object for adding command properties as functions that take options
 
-    function loiterOff() {
+    function LoiterOff() {
         loiterSetting = false;
         clearInterval(loiterInterval);
     };
     
-    function loiterOn() {
-        loiterSetting = true;
-        setInterval(client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFL})`), 15 * 1000);
-    };
-
-    function repeatOff() {
+    function RepeatOff() {
         repeatSetting = false;
         clearInterval(repeatInterval);
     };
-
-    function repeatOn() {
-        repeatSetting = true;
-        setInterval(client.say(to, repeatMsg), repeatInterval * 1000);
+    
+    CommandTable.help = function(opts) {
+        client.say(from, HelpMsg());
     };
 
-
-    internalCommand.help = function(opts) {
-        client.say(to, buildHelpMsg.toString());
-    };
-
-    internalCommand.join = function(opts) {
+    CommandTable.join = function(opts) {
         client.join(opts.argument);
     };
     
-    internalCommand.airspace = function(opts) {
+    CommandTable.airspace = function(opts) {
         savedairspace = opts.argument;
         client.say(to, `Airspace updated to: ${savedairspace}`);
     };
 
-    internalCommand.position = function(opts) {
-        client.say(to, SimulateAltCGRS.toString());
+    CommandTable.position = function(opts) {
+        client.say(to, SimAltCGRSFunction());
     };
 
-    internalCommand.approach = function(opts) {
+    CommandTable.approach = function(opts) {
         savedairspace = opts.argument;
-        client.say(to, `<CALLSIGN> | Ingress | ${SimulateAltCGRS} | Desired CGRS: ${opts.argument}`);
+        client.say(to, `<CALLSIGN> | Ingress | ${SimAltCGRSFunction()} | Desired CGRS: ${opts.argument}`);
     };
 
-    internalCommand.elev = function(opts) {
-        client.say(to, `<CALLSIGN> | Elev | Current CGRS: ${savedairspace} | FL${SimCurrentFL} for ${opts.argument}`);
+    CommandTable.elev = function(opts) {
+        client.say(to, `<CALLSIGN> | Elev | Current CGRS: ${savedairspace} | FL${SimCurrentFLOnly()} for ${opts.argument}`);
     };
 
-    internalCommand.transit = function(opts) {
+    CommandTable.transit = function(opts) {
+        client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${SimCurrentFLOnly()}`);
         savedairspace = opts.argument;
-        client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${SimCurrentFL}`);
-        loiterOff();
+        LoiterOff();
     };
 
-    internalCommand.egress = function(opts) {
-        client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${SimCurrentFL}`);
-        loiterOff();
+    CommandTable.egress = function(opts) {
+        client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${SimCurrentFLOnly()}`);
+        LoiterOff();
     };
 
-    internalCommand.loiter = function(opts) {
-        loiterOff();
-        if (opts.argument.length > 1) {savedairspace = opts.argument};
+    CommandTable.loiter = function(opts) { // To Do: Add check for whether last character(s) constitute number for interval, else error msg
+        LoiterOff();
 
-        client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFL})`)
+        const words = opts.argument.split(' ');
+        const loiterFrequency = Number(words.pop());
+        if (String(words).length > 1) {savedairspace = String(words)};
 
-        client.say(to, "15 sec auto-repeat until !egress !transit !loiteroff or new !loiter");
-        setTimeout(loiterOn, 3000);
+        client.say(to, `${loiterFrequency} minute auto-repeat until !egress !transit !loiteroff or new !loiter`);
+        client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
+
+        setTimeout(() => {
+            loiterSetting = true;
+            loiterInterval = setInterval(() => {
+                client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
+            }, loiterFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
+        }, 3000);
     }; 
-    
 
-    internalCommand.repeat = function(opts) {
-        repeatOff();
+    CommandTable.loiteroff = function(opts) {
+        LoiterOff();
+        client.say(to, "Loiter Auto-Repeat off.");
+    };
 
-        // let words: Array<string> = opts.argument.substring( String(opts.argument.trim().split(' ')[0]).length+1 ).trim();
-        // words = opts.argument.split(' ');
-        // var repeatInterval: Number = Number(words.pop());
-        // var repeatMsg = words;
+    CommandTable.repeat = function(opts) { // To Do: Add check for whether last character(s) constitute number for interval, else error msg
+        RepeatOff();
 
-        let words: string[] = opts.argument.split(' ');
-        words.shift();
-        repeatInterval = Number(words.pop());
+        const words = opts.argument.split(' ');
+        const repeatFrequency = Number(words.pop());
         repeatMsg = words.join(' ');
 
-        client.say(to, `${repeatInterval} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
-        setTimeout(repeatOn, 3000);
+        client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
+
+        setTimeout(() => {
+            repeatSetting = true;
+            repeatInterval = setInterval(() => {
+                client.say(to, repeatMsg);
+            }, repeatFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
+        }, 3000);
     };
 
-    internalCommand.repeatoff = function(opts) {
-        repeatOff();
+    CommandTable.repeatoff = function(opts) {
+        RepeatOff();
         client.say(to, "Auto-Repeat off.");
     };
 
     if (text && text.length > 2 && text[0] == '!') {
-        if (typeof internalCommand[opts.command]  === 'function') {
-            internalCommand[opts.command](opts);
+        if (typeof CommandTable[opts.command]  === 'function') {
+            CommandTable[opts.command](opts);
         } else { client.say(to, "Invalid command") };
     };
 

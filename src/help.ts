@@ -1,16 +1,16 @@
-export function buildHelpMsg(): string {
-    let helpMsg = 'The available commands are: ';
-    helpMsg += '\n!help (this command you just ran)';
-    helpMsg += ', !position';
-    helpMsg += ', !approach <new airspace>';
-    helpMsg += ', !loiter <optional: new airspace, else current airspace stated> (autorepeats every 30min)';
-    helpMsg += ', !loiteroff';
-    helpMsg += ', !transit <new airspace>';
-    helpMsg += ', !egress';
-    helpMsg += ', !elev <new elevation>';
-    helpMsg += ', !airspace <updated airspace>';
-    helpMsg += ', !repeat <text to be repeated> <interval in minutes>';
-    helpMsg += ', !repeatoff';
-    helpMsg += ', !join <#additionalchanneltojoin>'
-    return helpMsg;
+export function HelpMsg(): string {
+    let helpText: string = 'Available Commands: ';
+    helpText += '\n!help (the command you just ran)';
+    helpText += '\n!position';
+    helpText += '\n!approach <new airspace>';
+    helpText += '\n!loiter <optional: new airspace, else current airspace stated> <interval in minutes>';
+    helpText += '\n!loiteroff';
+    helpText += '\n!transit <new airspace>';
+    helpText += '\n!egress';
+    helpText += '\n!elev <new elevation>';
+    helpText += '\n!airspace <updated airspace>';
+    helpText += '\n!repeat <text to be repeated> <interval in minutes>';
+    helpText += '\n!repeatoff';
+    helpText += '\n!join <#additionalchanneltojoin>'
+    return helpText;
 };

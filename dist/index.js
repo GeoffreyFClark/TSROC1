@@ -24,18 +24,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const irc = __importStar(require("irc"));
-const help_1 = require("./help");
 const command_handler_1 = require("./command-handler");
 let config = require('../config/config.json');
 let client = new irc.Client(config.server, config.userName, config);
 client.addListener("registered", function () {
     console.log("Bot is now registered with the server " + config.server);
-    (0, help_1.buildHelpMsg)();
 });
 client.addListener('error', function (message) {
     console.log('error: ', message);
 });
-client.addListener('message', function (from, to, text, message) {
-    (0, command_handler_1.commandHandler)(client, from, to, text, message);
+client.addListener('message', function (from, to, text) {
+    (0, command_handler_1.CommandHandler)(client, from, to, text);
 });
 //# sourceMappingURL=index.js.map
