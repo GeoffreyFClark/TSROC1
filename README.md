@@ -23,7 +23,3 @@ Alternative method to download this project via terminal:
 . 
 
 See config folder for config.json options (e.g. server, channel, bot username, etc)
-
-
-
-Created by Geoffrey F. Clark
