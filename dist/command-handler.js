@@ -55,7 +55,7 @@ function CommandHandler(client, from, to, text) {
     CommandTable.loiter = function (opts) {
         LoiterOff();
         const words = opts.argument.split(' ');
-        const loiterFrequency = Number(words.pop());
+        const loiterFrequency = words.pop();
         if (typeof loiterFrequency === "number") {
             if (String(words).length > 1) {
                 savedairspace = String(words);
@@ -82,7 +82,7 @@ function CommandHandler(client, from, to, text) {
     CommandTable.repeat = function (opts) {
         RepeatOff();
         const words = opts.argument.split(' ');
-        const repeatFrequency = Number(words.pop());
+        const repeatFrequency = words.pop();
         repeatMsg = words.join(' ');
         if (typeof repeatFrequency === "number") {
             client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
