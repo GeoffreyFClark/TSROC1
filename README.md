@@ -19,7 +19,8 @@ Alternative method to download this project via terminal:
 6. Install the TypeScript compiler (tsc) if not already installed by running the following command: npm install -g typescript
 7. Build the project by running the following command to compile /src files into /dist: tsc
 8. Run the compiled JavaScript code (located in dist folder) using Node.js by running the command: node index.js
-(If you receive an error saying 'Cannot find module index.js' you can try to open it in your terminal first, and then run node index.js afterwards)
+(If you receive an error saying 'Cannot find module index.js' you can try to open it in your terminal first, and then run node index.js afterwards.)
+Alternatively use "npx ts-node index.ts"
 
 . 
 
