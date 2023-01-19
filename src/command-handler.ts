@@ -70,7 +70,7 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         LoiterOff();
 
         const words = opts.argument.split(' ');
-        const loiterFrequency = Number(words.pop());
+        const loiterFrequency = words.pop();
 
         if (typeof loiterFrequency === "number") {
             if (String(words).length > 1) {savedairspace = String(words)};
@@ -96,7 +96,7 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         RepeatOff();
 
         const words = opts.argument.split(' ');
-        const repeatFrequency = Number(words.pop());
+        const repeatFrequency = words.pop();
         repeatMsg = words.join(' ');
 
         if (typeof repeatFrequency === "number") {
