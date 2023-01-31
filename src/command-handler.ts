@@ -1,9 +1,19 @@
 import {HelpMsg} from './help';
 import {SimAltCGRSFunction, SimCurrentFLOnly} from './simulate-data'
 
-let savedairspace: string;
-let loiterSetting: boolean, loiterInterval: any;
-let repeatSetting: boolean, repeatInterval: any, repeatMsg: string;
+// let savedairspace: string;
+// let loiterSetting: boolean, loiterInterval: any;
+// let repeatSetting: boolean, repeatInterval: any, repeatMsg: string;
+
+const userData: { [key: string]: { 
+    savedAirspace: string, 
+    loiterSetting: boolean, 
+    loiterInterval: any, 
+    repeatSetting: boolean, 
+    repeatInterval: any, 
+    repeatMsg: string } 
+} = {};
+
 
 export function CommandHandler(client: any, from: any, to: any, text: string) {
     
@@ -19,14 +29,29 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
 
     let CommandTable: { [key: string]: (options: Options) => void } = {}; //Creates object for adding command properties as functions that take options
 
+    let user = userData[from];
+    if (!user) {
+        user = {
+            savedAirspace: '',
+            loiterSetting: false,
+            loiterInterval: null,
+            repeatSetting: false,
+            repeatInterval: null,
+            repeatMsg: ''
+        };
+        userData[from] = user;
+    }
+
     function LoiterOff() {
-        loiterSetting = false;
-        clearInterval(loiterInterval);
+        user.loiterSetting = false;
+        clearInterval(user.loiterInterval);
+        user.loiterInterval = null;
     };
     
     function RepeatOff() {
-        repeatSetting = false;
-        clearInterval(repeatInterval);
+        user.repeatSetting = false;
+        clearInterval(user.repeatInterval);
+        user.repeatInterval = null;
     };
     
     CommandTable.help = function(opts) {
@@ -38,8 +63,8 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
     };
     
     CommandTable.airspace = function(opts) {
-        savedairspace = opts.argument;
-        client.say(to, `Airspace updated to: ${savedairspace}`);
+        user.savedAirspace = opts.argument;
+        client.say(to, `${from} | Airspace updated to: ${user.savedAirspace}`);
     };
 
     CommandTable.position = function(opts) {
@@ -47,22 +72,22 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
     };
 
     CommandTable.approach = function(opts) {
-        savedairspace = opts.argument;
-        client.say(to, `<CALLSIGN> | Ingress | ${SimAltCGRSFunction()} | Desired CGRS: ${opts.argument}`);
+        user.savedAirspace = opts.argument;
+        client.say(to, `${from} | <CALLSIGN> | Ingress | ${SimAltCGRSFunction()} | Desired CGRS: ${opts.argument}`);
     };
 
     CommandTable.elev = function(opts) {
-        client.say(to, `<CALLSIGN> | Elev | Current CGRS: ${savedairspace} | FL${SimCurrentFLOnly()} for ${opts.argument}`);
+        client.say(to, `${from} | <CALLSIGN> | Elev | Current CGRS: ${user.savedAirspace} | FL${SimCurrentFLOnly()} for ${opts.argument}`);
     };
 
     CommandTable.transit = function(opts) {
-        client.say(to, `<CALLSIGN> | Transit | ${savedairspace} to ${opts.argument} | FL${SimCurrentFLOnly()}`);
-        savedairspace = opts.argument;
+        client.say(to, `${from} | <CALLSIGN> | Transit | ${user.savedAirspace} to ${opts.argument} | FL${SimCurrentFLOnly()}`);
+        user.savedAirspace = opts.argument;
         LoiterOff();
     };
 
     CommandTable.egress = function(opts) {
-        client.say(to, `<CALLSIGN> | Egress | ${savedairspace} | FL${SimCurrentFLOnly()}`);
+        client.say(to, `${from} | <CALLSIGN> | Egress | ${user.savedAirspace} | FL${SimCurrentFLOnly()}`);
         LoiterOff();
     };
 
@@ -72,24 +97,30 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         const words = opts.argument.split(' ');
         const loiterFrequency = words.pop();
 
-        if (typeof loiterFrequency === "number") {
-            if (String(words).length > 1) {savedairspace = String(words)};
+        if (isNaN(Number(loiterFrequency))) {
+            client.say(to, 'Error: loiter frequency must be a number');
+            client.say(to, "Please append a time interval for auto-repetition. Format: !loiter <optional new airspace> <repeat interval in minutes>");
+            return;
+        };
+
+        if (!isNaN(loiterFrequency)) {
+            if (String(words).length > 1) {user.savedAirspace = String(words)};
 
             client.say(to, `${loiterFrequency} minute auto-repeat until !egress !transit !loiteroff or new !loiter`);
-            client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
+            client.say(to, `${from} | <CALLSIGN> | Est | ${user.savedAirspace} | FL${SimCurrentFLOnly()}`);
 
             setTimeout(() => {
-                loiterSetting = true;
-                loiterInterval = setInterval(() => {
-                    client.say(to, `<CALLSIGN> | Est | ${savedairspace} | ${SimCurrentFLOnly()}`);
+                user.loiterSetting = true;
+                user.loiterInterval = setInterval(() => {
+                    client.say(to, `${from} | <CALLSIGN> | Est | ${user.savedAirspace} | FL${SimCurrentFLOnly()}`);
                 }, loiterFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
             }, 3000);
-        } else { client.say(to, "Please append a time interval for auto-repetition. Format: !loiter <optional new airspace> <repeat interval in minutes>") };
+        };
     }; 
 
     CommandTable.loiteroff = function(opts) {
         LoiterOff();
-        client.say(to, "Loiter Auto-Repeat off.");
+        client.say(to, `${from}'s Loiter Auto-Repeat off.`);
     };
 
     CommandTable.repeat = function(opts) { 
@@ -97,23 +128,29 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
 
         const words = opts.argument.split(' ');
         const repeatFrequency = words.pop();
-        repeatMsg = words.join(' ');
+        user.repeatMsg = words.join(' ');
 
-        if (typeof repeatFrequency === "number") {
-            client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${repeatMsg}`);
+        if (isNaN(Number(repeatFrequency))) {
+            client.say(to, 'Error: repeat frequency must be a number');
+            client.say(to, "Please append a time interval for auto-repetition. Format: !repeat <text to be repeated> <interval in minutes>");
+            return;
+        };
+
+        if (!isNaN(Number(repeatFrequency))) {
+            client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${user.repeatMsg}`);
 
             setTimeout(() => {
-                repeatSetting = true;
-                repeatInterval = setInterval(() => {
-                    client.say(to, repeatMsg);
+                user.repeatSetting = true;
+                user.repeatInterval = setInterval(() => {
+                    client.say(to, `${from} | ${user.repeatMsg}`);
                 }, repeatFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
             }, 3000);
-        } else {client.say(to, "Please append a time interval for auto-repetition. Format: !loiter <optional new airspace> <repeat interval in minutes>")};
+        };
     };
 
     CommandTable.repeatoff = function(opts) {
         RepeatOff();
-        client.say(to, "Auto-Repeat off.");
+        client.say(to, `${from}'s Auto-Repeat off.`);
     };
 
     if (text && text.length > 2 && text[0] == '!') {

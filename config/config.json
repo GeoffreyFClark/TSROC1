@@ -1,6 +1,6 @@
 {
     "admins": ["Clark!~Clark@EA74C03C.92CF25AD.43153B3E.IP"],
-    "server": "eu.chat4all.org",
+    "server": "cadmium.libera.chat",
     "userName": "MQ9HelperBot",
     "realName": "MQ9 IRC Bot",
     "port": 6667,
@@ -8,7 +8,7 @@
     "showErrors": false,
     "autoRejoin": true,
     "autoConnect": true,
-    "channels": ["#mircbottest2"],
+    "channels": ["#mircbottest"],
     "secure": false,
     "selfSigned": false,
     "certExpired": false,
