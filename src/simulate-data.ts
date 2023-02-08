@@ -26,11 +26,11 @@ export function SimAltCGRSFunction(): string {
     };
 
     let CGRSMsg: string = `Altitude: ${makealtitude} | CGRS: ${part1cgrs}` + MakeLetters(2) + MakeNumbers(1);
-    return CGRSMsg;
+    return CGRSMsg; //Example string return: "Altitude: 24000 | CGRS: 12SR9"
 };
 
 
 export function SimCurrentFLOnly(): string {
     let currentFL: string = ((Math.floor(Math.random() * (50-36) + 36) ) * 5).toString();
-    return currentFL;
+    return currentFL; //Example string return: "240"
 };

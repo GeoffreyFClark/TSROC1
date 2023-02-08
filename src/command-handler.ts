@@ -1,10 +1,6 @@
 import {HelpMsg} from './help';
 import {SimAltCGRSFunction, SimCurrentFLOnly} from './simulate-data'
 
-// let savedairspace: string;
-// let loiterSetting: boolean, loiterInterval: any;
-// let repeatSetting: boolean, repeatInterval: any, repeatMsg: string;
-
 const userData: { [key: string]: { 
     savedAirspace: string, 
     loiterSetting: boolean, 
@@ -12,7 +8,7 @@ const userData: { [key: string]: {
     repeatSetting: boolean, 
     repeatInterval: any, 
     repeatMsg: string } 
-} = {};
+} = {}; //Creates empty dictionary to store user data
 
 
 export function CommandHandler(client: any, from: any, to: any, text: string) {
@@ -20,12 +16,12 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
     interface Options {
         command: string;
         argument: any;
-    };
+    }; //Creates options interface type
     
     let opts: Options = {
         command: String(text.split(' ')[0]).replace('!', '').trim(), //defines first word after '!' as command for .property of CommandTable
         argument: text.substring(String(text.split(' ')[0]).length).trim(), //defines text following !command as opts.argument
-    };
+    }; 
 
     let CommandTable: { [key: string]: (options: Options) => void } = {}; //Creates object for adding command properties as functions that take options
 
@@ -40,7 +36,7 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
             repeatMsg: ''
         };
         userData[from] = user;
-    }
+    }; //Adds new users to user dictionary
 
     function LoiterOff() {
         user.loiterSetting = false;
@@ -68,7 +64,7 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
     };
 
     CommandTable.position = function(opts) {
-        client.say(to, SimAltCGRSFunction());
+        client.say(to, `${from} | ${SimAltCGRSFunction()}`);
     };
 
     CommandTable.approach = function(opts) {
@@ -95,16 +91,16 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         LoiterOff();
 
         const words = opts.argument.split(' ');
-        const loiterFrequency = words.pop();
+        const loiterFrequency = words.pop(); //Saves last word as repeatFrequency (must be number)
 
         if (isNaN(Number(loiterFrequency))) {
             client.say(to, 'Error: loiter frequency must be a number');
             client.say(to, "Please append a time interval for auto-repetition. Format: !loiter <optional new airspace> <repeat interval in minutes>");
             return;
-        };
+        }; //Error handler that checks if repeatFrequency is a number
 
         if (!isNaN(loiterFrequency)) {
-            if (String(words).length > 1) {user.savedAirspace = String(words)};
+            if (String(words).length > 1) {user.savedAirspace = String(words)}; //Saves new airspace if specified
 
             client.say(to, `${loiterFrequency} minute auto-repeat until !egress !transit !loiteroff or new !loiter`);
             client.say(to, `${from} | <CALLSIGN> | Est | ${user.savedAirspace} | FL${SimCurrentFLOnly()}`);
@@ -114,7 +110,7 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
                 user.loiterInterval = setInterval(() => {
                     client.say(to, `${from} | <CALLSIGN> | Est | ${user.savedAirspace} | FL${SimCurrentFLOnly()}`);
                 }, loiterFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
-            }, 3000);
+            }, 3000); //Additional 3 second delayed activation helps with server latency in some situations
         };
     }; 
 
@@ -127,14 +123,14 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         RepeatOff();
 
         const words = opts.argument.split(' ');
-        const repeatFrequency = words.pop();
+        const repeatFrequency = words.pop(); //Saves last word as repeatFrequency (must be number)
         user.repeatMsg = words.join(' ');
 
         if (isNaN(Number(repeatFrequency))) {
             client.say(to, 'Error: repeat frequency must be a number');
             client.say(to, "Please append a time interval for auto-repetition. Format: !repeat <text to be repeated> <interval in minutes>");
             return;
-        };
+        }; //Error handler that checks if repeatFrequency is a number
 
         if (!isNaN(Number(repeatFrequency))) {
             client.say(to, `${repeatFrequency} minute auto-repeat until !repeatoff or new !repeat\n${user.repeatMsg}`);
@@ -144,7 +140,7 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
                 user.repeatInterval = setInterval(() => {
                     client.say(to, `${from} | ${user.repeatMsg}`);
                 }, repeatFrequency * 1000 * 60); //setTimeout is in milliseconds. *1000 for seconds and *60 for minutes
-            }, 3000);
+            }, 3000); //Additional 3 second delayed activation helps with server latency in some situations
         };
     };
 
@@ -157,6 +153,6 @@ export function CommandHandler(client: any, from: any, to: any, text: string) {
         if (typeof CommandTable[opts.command]  === 'function') {
             CommandTable[opts.command](opts);
         } else { client.say(to, "Invalid command") };
-    };
+    }; //Executes command if it exists, otherwise responds with "Invalid Command"
 
 };

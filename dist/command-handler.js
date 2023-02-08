@@ -23,6 +23,7 @@ function CommandHandler(client, from, to, text) {
         };
         userData[from] = user;
     }
+    ;
     function LoiterOff() {
         user.loiterSetting = false;
         clearInterval(user.loiterInterval);
@@ -46,7 +47,7 @@ function CommandHandler(client, from, to, text) {
         client.say(to, `${from} | Airspace updated to: ${user.savedAirspace}`);
     };
     CommandTable.position = function (opts) {
-        client.say(to, (0, simulate_data_1.SimAltCGRSFunction)());
+        client.say(to, `${from} | ${(0, simulate_data_1.SimAltCGRSFunction)()}`);
     };
     CommandTable.approach = function (opts) {
         user.savedAirspace = opts.argument;
