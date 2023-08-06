@@ -1,3 +1,5 @@
+Part of IRC automation platform backend. Aircraft position via simulated data in this repo.
+
 To download, install, and run the project, follow these steps:
 
 1. Clone the repository using the following command in your IDE or terminal:
